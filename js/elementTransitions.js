@@ -51,35 +51,60 @@ var PageTransitions = (function() {
   }
 
   function animate(block, callback) {
-    nextPage($(block).closest('.et-wrapper'), $(block).attr('et-out'), $(block).attr('et-in'), callback);
-  }
-
-  function nextPage(block, outClass, inClass, callback) {
-    block = $(block);
-    inClass = formatClass(inClass);
-    outClass = formatClass(outClass);
-    var current = block.data('current'),
-        $pages = block.children('div.et-page'),
-        pagesCount = $pages.length,
-        endCurrPage = false,
-        endNextPage = false;
-
+    block = $(block).closest('.et-wrapper');
     if(block.data('isAnimating')) {
       return false;
     }
-
     block.data('isAnimating', true);
 
-    var $currPage = $pages.eq(current);
-    if(current < pagesCount - 1) {
-      current++;
-    }
-    else {
-      current = 0;
-    }
-    block.data('current', current);
+    nextPage(block, callback);
+  }
 
-    var $nextPage = $pages.eq(current).addClass('et-page-current');
+  function gotoPage(block, page, callback) {
+    block = $(block);
+    if(block.data('isAnimating')) {
+      return false;
+    }
+    block.data('isAnimating', true);
+
+    var current = block.data('current'),
+        $pages = block.children('div.et-page'),
+        pagesCount = $pages.length;
+
+    if(jQuery.isNumeric(page) === false) {
+      page = $pages.index($(page));
+    }
+
+    if(page === -1 || page > pagesCount)
+      return;
+
+    performTransition(block, current, page, callback);
+  }
+
+  function nextPage(block, callback) {
+    var current = block.data('current'),
+        pagesCount = block.children('div.et-page').length,
+        next = 0;
+
+    if(current < pagesCount - 1) {
+      next = current + 1;
+    }
+
+    performTransition(block, current, next, callback);
+  }
+
+  function performTransition(block, current, next, callback) {
+    var outClass = formatClass(block.attr('et-out')),
+        inClass = formatClass(block.attr('et-in')),
+        endCurrPage = false,
+        endNextPage = false,
+        $pages = block.children('div.et-page'),
+        $currPage = $pages.eq(current),
+        $nextPage = $pages.eq(next);
+
+    block.data('current', next);
+
+    $nextPage.addClass('et-page-current');
 
     $currPage.addClass(outClass).on(animEndEventName, function() {
       $currPage.off(animEndEventName);
@@ -107,8 +132,8 @@ var PageTransitions = (function() {
   }
 
   function resetPage($outpage, $inpage) {
-    $outpage.attr('class', $outpage.data( 'originalClassList'));
-    $inpage.attr('class', $inpage.data( 'originalClassList') + ' et-page-current');
+    $outpage.attr('class', $outpage.data('originalClassList'));
+    $inpage.attr('class', $inpage.data('originalClassList') + ' et-page-current');
   }
 
   function formatClass(str) {
@@ -122,6 +147,7 @@ var PageTransitions = (function() {
   return {
     init : init,
     nextPage: nextPage,
+    gotoPage: gotoPage,
     animate: animate
   };
 })();
