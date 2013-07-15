@@ -55,7 +55,7 @@
 			var inClass = formatClass(inClass),
 				outClass = formatClass(outClass),
 				current = block.data('current'),
-				$pages = block.children( 'div.et-page' ),
+				$pages = block.children('.et-page'),
 				pagesCount = $pages.length,
 				endCurrPage = false,
 				endNextPage = false
