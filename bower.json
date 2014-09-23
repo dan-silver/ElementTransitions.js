@@ -1,0 +1,27 @@
+{
+  "name": "ElementTransitions.js",
+  "version": "0.0.1",
+  "homepage": "http://dan-silver.github.io/ElementTransitions.js/",
+  "authors": [
+    "Dan Silver"
+  ],
+  "description": "Simple transitions for web pages and dom elements",
+  "main": [
+    "build/elementTransitions.min.js",
+    "build/elementTransitions.css"
+  ],
+
+  "keywords": [
+      "jquery",
+      "jquery plugin",
+      "transitions"
+  ],
+  "license": "Codrops",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
