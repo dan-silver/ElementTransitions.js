@@ -74,6 +74,8 @@ var PageTransitions = (function($) {
     block.data('current', current);
 
     var $nextPage = $pages.eq(current).addClass('et-page-current');
+    
+    block.trigger('onStartAnimation', [$currPage, $nextPage]);
 
     $currPage.addClass(outClass).on(animEndEventName, function() {
       $currPage.off(animEndEventName);
@@ -98,6 +100,7 @@ var PageTransitions = (function($) {
   function onEndAnimation($outpage, $inpage, block) {
     resetPage($outpage, $inpage);
     block.data('isAnimating', false);
+    block.trigger('onEndAnimation', [$outpage, $inpage]);
   }
 
   function resetPage($outpage, $inpage) {
