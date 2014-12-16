@@ -1,3 +1,4 @@
+
 /*
   elementTransitions.js
 */
@@ -40,12 +41,68 @@ var PageTransitions = (function($) {
     });
 
     $(".et-rotate").click(function() {
-      animate($(this));
+      animate($(this), 0);
+    });
+
+    $(".et-back").click(function () {
+        animate($(this), 1);
     });
   }
 
-  function animate(block, callback) {
-    nextPage($(block).closest('.et-wrapper'), $(block).attr('et-out'), $(block).attr('et-in'), callback);
+  function animate(block, direction, callback) {
+      if (direction === 0) {
+          nextPage($(block).closest('.et-wrapper'), $(block).attr('et-out'), $(block).attr('et-in'), callback);
+      }
+      else {
+          prevtPage($(block).closest('.et-wrapper'), $(block).attr('et-out'), $(block).attr('et-in'), callback);
+      }
+  }
+
+  function prevtPage(block, outClass, inClass, callback) {
+      block = $(block);
+      inClass = formatClass(inClass);
+      outClass = formatClass(outClass);
+      var current = block.data('current'),
+          $pages = block.children('.et-page'),
+          pagesCount = $pages.length,
+          endCurrPage = false,
+          endNextPage = false;
+
+      if (block.data('isAnimating')) {
+          return false;
+      }
+
+      block.data('isAnimating', true);
+
+      var $currPage = $pages.eq(current);
+      if (current > 0) {
+          current--;
+      }
+      else {
+          current = pagesCount;
+      }
+      block.data('current', current);
+
+      var $prevPage = $pages.eq(current).addClass('et-page-current');
+
+      $currPage.addClass(outClass).on(animEndEventName, function () {
+          $currPage.off(animEndEventName);
+          endCurrPage = true;
+          if (endNextPage) {
+              if (jQuery.isFunction(callback)) {
+                  callback(block, $prevPage, $currPage);
+              }
+              onEndAnimation($currPage, $prevPage, block);
+          }
+      });
+
+      $prevPage.addClass(inClass).on(animEndEventName, function () {
+          $prevPage.off(animEndEventName);
+          endNextPage = true;
+          if (endCurrPage) {
+              onEndAnimation($currPage, $prevPage, block);
+          }
+      });
   }
 
   function nextPage(block, outClass, inClass, callback) {
