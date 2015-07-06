@@ -42,10 +42,23 @@ var PageTransitions = (function($) {
   }
 
   function animate(block, callback) {
-    var outClass = formatClass($(block).attr('et-out')),
-        inClass  = formatClass($(block).attr('et-in')),
-        step     = $(block).attr('et-step'),
-        block    = $(block).closest('.et-wrapper')
+    PageTransitions.animate(block, undefined, undefined, undefined, callback);
+  }
+
+  function animate(block, outClass, inClass, step, callback) {
+    if (outClass === undefined)
+      outClass = formatClass($(block).attr('et-out'));
+    else
+      outClass = formatClass(outClass);
+    if (inClass === undefined)
+      inClass  = formatClass($(block).attr('et-in'));
+    else
+      inClass = formatClass(inClass);
+
+    if (step === undefined) 
+      step = $(block).attr('et-step')
+    
+    var block    = $(block).closest('.et-wrapper')
 
     if (step === undefined)
       step = 1;
